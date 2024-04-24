@@ -61,6 +61,7 @@ class GCSFinder(AbsClient1):
             # make an HTTP request.
             bucket = self.client.bucket(self.target.bucket)
             blob = bucket.get_blob(self.target.path)
+
             print(f"The blob exists! Here are some of is metadata")
             print(f"Blob: {blob.name}")
             print(f"Bucket: {blob.bucket.name}")
@@ -68,11 +69,11 @@ class GCSFinder(AbsClient1):
             print(f"ID: {blob.id}")
             print(f"Size: {blob.size / 1048576:0.6f} Mb")
             print(f"Updated: {blob.updated}")
+
             return True
 
         except Exception as e:
-            print(
-                f"The blob'{self.target.bucket}'/'{self.target.path}'.' doesn't exists!")
+            print(f"The blob'{self.target.bucket}'/'{self.target.path}'.' doesn't exists!")
             print(e)
             return False
 
