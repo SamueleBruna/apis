@@ -9,7 +9,7 @@ class GCSFinder(AbsClient1):
     target is an instance of the Blob class
     """
 
-    def __init__(self, target: Blob):
+    def __init__(self, target: Blob = None):
         """
         The constructor creates the instance with the number of series elements that should be evaluated.
         """
@@ -46,8 +46,8 @@ class GCSFinder(AbsClient1):
             self._target = target
 
         else:
-            bucket = input('Please insert the name of the bucket')
-            path = input('Please insert the path to the blob')
+            bucket = input('Please insert the name of the bucket: ')
+            path = input('Please insert the path to the blob: ')
             self._target = Blob(bucket, path)
 
     def find(self) -> bool:

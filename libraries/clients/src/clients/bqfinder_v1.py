@@ -9,7 +9,7 @@ class BQFinder(AbsClient1):
     target is an instance of the Table class
     """
 
-    def __init__(self, target: Table):
+    def __init__(self, target: Table = None):
         """
         The constructor creates the instance with the number of series elements that should be evaluated.
         """
@@ -43,12 +43,12 @@ class BQFinder(AbsClient1):
         This method should instantiate the target to search
         """
         if target is not None and isinstance(target, Table):
-          self._target = target
+            self._target = target
 
         else:
-            table_name = input('Please insert the name of the table')
-            dataset = input('Please insert the name of the dataset of the table')
-            project = input('Please insert the name of the project of the table')
+            table_name = input('Please insert the name of the table: ')
+            dataset = input('Please insert the name of the dataset of the table: ')
+            project = input('Please insert the name of the project of the table: ')
             self._target = Table(project, dataset, table_name)
 
     def find(self) -> bool:
@@ -64,15 +64,26 @@ class BQFinder(AbsClient1):
             return True
 
         except Exception as e:
-            print(f"The table'{self.target.project}':'{self.target.dataset}'.'{self.target.table_name}' doesn't exists!")
+            print(
+                f"The table'{self.target.project}':'{self.target.dataset}'.'{self.target.table_name}' doesn't exists!")
             print(e)
             return False
 
 
+def main():
+    project_id = "skyita-da-daita-test"
+    dataset_id = "contract"
+    table_id = "contract"
+    table = Table(project_id, dataset_id, table_id)
+
+    bqfind1 = BQFinder(table)
+    exists1 = bqfind1.find()
+    print(exists1)
+
+    bqfind2 = BQFinder()
+    exists2 = bqfind2.find()
+    print(exists2)
 
 
-
-
-
-
-
+if __name__ == "__main__":
+    main()
