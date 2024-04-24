@@ -11,7 +11,9 @@ class GCSFinder(AbsClient1):
 
     def __init__(self, target: Blob = None):
         """
-        The constructor creates the instance with the number of series elements that should be evaluated.
+        The constructor creates the instance using the setter method of client, a function should be passed.
+        It creates the target attribute, which is a Blob object.
+        If the latter is None, it will be asked to the user to define it
         """
         self.client = Client()
         self.target = target
@@ -52,7 +54,8 @@ class GCSFinder(AbsClient1):
 
     def find(self) -> bool:
         """
-        This method should try to find the object wanted using the client and returning the APIs response
+        This method should try to find the target table
+        using the client proper function and returning the APIs response.
         """
 
         try:
@@ -84,6 +87,7 @@ def main():
     table = Blob(bucket_name, blob_name)
 
     gcsfind1 = GCSFinder(table)
+    print(gcsfind1.client)
     exists1 = gcsfind1.find()
     print(exists1)
 

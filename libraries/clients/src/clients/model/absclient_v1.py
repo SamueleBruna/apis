@@ -3,15 +3,16 @@ import abc
 
 class AbsClient1(abc.ABC):
     """
-    This is an abstract class, which gives a template to other classes that must implement a Python Client.
+    This is an abstract class, which gives a template to other classes that must implement a Client and find method.
     It is based on the fact that the user must have a Google Cloud SDK active and configured to the correct project
     """
     client: None
+    target: None
 
     @property
     def client(self):
         """
-        This method should instantiate the client
+        This method should return the client
         """
         raise NotImplementedError
 
@@ -23,10 +24,26 @@ class AbsClient1(abc.ABC):
         """
         raise NotImplementedError
 
+    @property
+    def target(self):
+        """
+        This method should return the target
+        """
+        raise NotImplementedError
+
+    @target.setter
+    def target(self, target):
+        """
+        This method should instantiate the target to search
+        """
+        raise NotImplementedError
+
     @abc.abstractmethod
     def find(self):
         """
         This method should try to find the object wanted using the client and returning the APIs response
+        Best practice is to find and be sure that the target exists before applying other methods.
+        This is why I want that this method should always be implemented.
         """
 
         raise NotImplementedError

@@ -11,7 +11,9 @@ class BQFinder(AbsClient1):
 
     def __init__(self, target: Table = None):
         """
-        The constructor creates the instance with the number of series elements that should be evaluated.
+        The constructor creates the instance using the setter method of client, a function should be passed.
+        It creates the target attribute, which is a Table object.
+        If the latter is None, it will be asked to the user to define it
         """
         self.client = Client()
         self.target = target
@@ -19,7 +21,7 @@ class BQFinder(AbsClient1):
     @property
     def client(self):
         """
-        This method should instantiate the client
+        This method should return the client
         """
         return self._client
 
@@ -53,7 +55,8 @@ class BQFinder(AbsClient1):
 
     def find(self) -> bool:
         """
-        This method should try to find the object wanted using the client and returning the APIs response
+        This method should try to find the target table
+        using the client proper function and returning the APIs response.
         """
 
         target_table = f"{self.target.project}.{self.target.dataset}.{self.target.table_name}"
@@ -77,6 +80,7 @@ def main():
     table = Table(project_id, dataset_id, table_id)
 
     bqfind1 = BQFinder(table)
+    print(bqfind1.client)
     exists1 = bqfind1.find()
     print(exists1)
 
