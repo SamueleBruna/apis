@@ -8,6 +8,8 @@ packages = [{include = "clients", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+google-cloud-bigquery = "^3.21.0"
+google-cloud-storage = "^2.16.0"
 
 
 [build-system]
