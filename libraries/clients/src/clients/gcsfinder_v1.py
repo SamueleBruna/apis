@@ -77,9 +77,19 @@ class GCSFinder(AbsClient1):
             return False
 
 
+def main():
+    bucket_name = "skyita-da-daita-test-application"
+    blob_name = "data-model-mapper/conf/marketing_cloud.dynamic_event/map.json"
+    table = Blob(bucket_name, blob_name)
+
+    gcsfind1 = GCSFinder(table)
+    exists1 = gcsfind1.find()
+    print(exists1)
+
+    gcsfind2 = GCSFinder()
+    exists2 = gcsfind2.find()
+    print(exists2)
 
 
-
-
-
-
+if __name__ == "__main__":
+    main()
