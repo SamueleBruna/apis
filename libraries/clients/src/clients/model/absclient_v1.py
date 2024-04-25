@@ -8,8 +8,10 @@ class AbsClient1(abc.ABC):
     """
     client: None
     target: None
+    logger: None
 
     @property
+    @abc.abstractmethod
     def client(self):
         """
         This method should return the client
@@ -25,6 +27,7 @@ class AbsClient1(abc.ABC):
         raise NotImplementedError
 
     @property
+    @abc.abstractmethod
     def target(self):
         """
         This method should return the target
@@ -32,9 +35,26 @@ class AbsClient1(abc.ABC):
         raise NotImplementedError
 
     @target.setter
+    @abc.abstractmethod
     def target(self, target):
         """
         This method should instantiate the target to search
+        """
+        raise NotImplementedError
+
+    @property
+    @abc.abstractmethod
+    def logger(self):
+        """
+        This method should return the logger
+        """
+        raise NotImplementedError
+
+    @logger.setter
+    @abc.abstractmethod
+    def logger(self, target):
+        """
+        This method should instantiate the logger
         """
         raise NotImplementedError
 

@@ -1,6 +1,7 @@
 from clients.model.absclient_v1 import AbsClient1
 from clients.model.table import Table
 from google.cloud.bigquery.client import Client
+from logger.logger import Logger
 
 
 class BQFinder(AbsClient1):
@@ -9,7 +10,7 @@ class BQFinder(AbsClient1):
     target is an instance of the Table class
     """
 
-    def __init__(self, target: Table = None):
+    def __init__(self, target: Table = None, logger: Logger = Logger()):
         """
         The constructor creates the instance using the setter method of client, a function should be passed.
         It creates the target attribute, which is a Table object.
@@ -17,6 +18,7 @@ class BQFinder(AbsClient1):
         """
         self.client = Client()
         self.target = target
+        self.logger = logger
 
     @property
     def client(self):
@@ -26,11 +28,11 @@ class BQFinder(AbsClient1):
         return self._client
 
     @client.setter
-    def client(self, client_func):
+    def client(self, client_obj):
         """
         This method should instantiate the client
         """
-        self._client = client_func
+        self._client = client_obj
 
     @property
     def target(self):
@@ -53,6 +55,20 @@ class BQFinder(AbsClient1):
             project = input('Please insert the name of the project of the table: ')
             self._target = Table(project, dataset, table_name)
 
+    @property
+    def logger(self):
+        """
+        This method should return the logger
+        """
+        return self._logger
+
+    @logger.setter
+    def logger(self, logger_obj):
+        """
+        This method should instantiate the logger
+        """
+        self._logger = logger_obj
+
     def find(self) -> bool:
         """
         This method should try to find the target table
@@ -63,13 +79,14 @@ class BQFinder(AbsClient1):
 
         try:
             self.client.get_table(target_table)
-            print(f"The table'{self.target.project}':'{self.target.dataset}'.'{self.target.table_name}' exists!")
+            self.logger.info(f"The table'{self.target.project}':'{self.target.dataset}'.'{self.target.table_name}' "
+                             f"exists!")
             return True
 
         except Exception as e:
-            print(
+            self.logger.error(
                 f"The table'{self.target.project}':'{self.target.dataset}'.'{self.target.table_name}' doesn't exists!")
-            print(e)
+            self.logger.exception(e)
             return False
 
 
@@ -77,6 +94,11 @@ def main():
     project_id = "skyita-da-daita-test"
     dataset_id = "contract"
     table_id = "contract"
+
+    # project_id = "training-gcp-309207"
+    # dataset_id = "Gambaro_api"
+    # table_id = "test_api"
+
     table = Table(project_id, dataset_id, table_id)
 
     bqfind1 = BQFinder(table)

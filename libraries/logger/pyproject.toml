@@ -1,16 +1,15 @@
 [tool.poetry]
-name = "clients"
+name = "logger"
 version = "0.1.0"
 description = ""
 authors = ["Samuele Bruna <samuele.bruna.nttdata@skytv.it>"]
 readme = "README.md"
-packages = [{include = "clients", from = "src"}]
+packages = [{include = "logger", from = "src"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-google-cloud-bigquery = "^3.21.0"
-google-cloud-storage = "^2.16.0"
-logger = { path = "../logger", develop = true }
+pathlib = "^1.0.1"
+
 
 
 

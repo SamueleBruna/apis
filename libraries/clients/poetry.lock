@@ -449,6 +449,19 @@ files = [
 ]
 
 [[package]]
+name = "logger"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = "^3.11"
+files = []
+develop = true
+
+[package.source]
+type = "directory"
+url = "../logger"
+
+[[package]]
 name = "packaging"
 version = "24.0"
 description = "Core utilities for Python packages"
@@ -601,4 +614,4 @@ zstd = ["zstandard (>=0.18.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "5094025a99c846c49059434c8e3bc89d059adde792795eb0e15f0e59ae71eaa5"
+content-hash = "921ac4eca8b372b459c0214e1a839e53833f893b0e45558eddf28732841b2d0d"

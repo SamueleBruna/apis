@@ -1,6 +1,7 @@
 from clients.model.absclient_v1 import AbsClient1
 from clients.model.blob import Blob
 from google.cloud.storage import Client
+from logger.logger import Logger
 
 
 class GCSFinder(AbsClient1):
@@ -9,7 +10,7 @@ class GCSFinder(AbsClient1):
     target is an instance of the Blob class
     """
 
-    def __init__(self, target: Blob = None):
+    def __init__(self, target: Blob = None,  logger: Logger = Logger()):
         """
         The constructor creates the instance using the setter method of client, a function should be passed.
         It creates the target attribute, which is a Blob object.
@@ -17,6 +18,7 @@ class GCSFinder(AbsClient1):
         """
         self.client = Client()
         self.target = target
+        self.logger = logger
 
     @property
     def client(self):
@@ -26,11 +28,11 @@ class GCSFinder(AbsClient1):
         return self._client
 
     @client.setter
-    def client(self, client_func):
+    def client(self, client_obj):
         """
         This method should instantiate the client
         """
-        self._client = client_func
+        self._client = client_obj
 
     @property
     def target(self):
@@ -52,6 +54,20 @@ class GCSFinder(AbsClient1):
             path = input('Please insert the path to the blob: ')
             self._target = Blob(bucket, path)
 
+    @property
+    def logger(self):
+        """
+        This method should return the logger
+        """
+        return self._logger
+
+    @logger.setter
+    def logger(self, logger_obj):
+        """
+        This method should instantiate the logger
+        """
+        self._logger = logger_obj
+
     def find(self) -> bool:
         """
         This method should try to find the target table
@@ -65,19 +81,19 @@ class GCSFinder(AbsClient1):
             bucket = self.client.bucket(self.target.bucket)
             blob = bucket.get_blob(self.target.path)
 
-            print(f"The blob exists! Here are some of is metadata")
-            print(f"Blob: {blob.name}")
-            print(f"Bucket: {blob.bucket.name}")
-            print(f"Storage class: {blob.storage_class}")
-            print(f"ID: {blob.id}")
-            print(f"Size: {blob.size / 1048576:0.6f} Mb")
-            print(f"Updated: {blob.updated}")
+            self.logger.info(f"The blob exists! Here are some of is metadata")
+            self.logger.info(f"Blob: {blob.name}")
+            self.logger.info(f"Bucket: {blob.bucket.name}")
+            self.logger.info(f"Storage class: {blob.storage_class}")
+            self.logger.info(f"ID: {blob.id}")
+            self.logger.info(f"Size: {blob.size / 1048576:0.6f} Mb")
+            self.logger.info(f"Updated: {blob.updated}")
 
             return True
 
         except Exception as e:
-            print(f"The blob'{self.target.bucket}'/'{self.target.path}'.' doesn't exists!")
-            print(e)
+            self.logger.error(f"The blob'{self.target.bucket}'/'{self.target.path}'.' doesn't exists!")
+            self.logger.exception(e)
             return False
 
 
