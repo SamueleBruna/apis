@@ -25,7 +25,14 @@ class TestConfigReading(unittest.TestCase):
 
     @patch('logging.getLogger')
     def test_log_level_debug(self, mock_getLogger):
-        # Mock logger creation and set level to DEBUG
+        """
+        Mock logger creation and set level to DEBUG The return_value attribute of a mock object specifies what
+        value the mock object will return when it's called. we assign to the mock_logger the ability to store and
+        return what will be returned from return mock_getLogger, when Logger constructor is invoked. In particular,
+        we want to test the correctness when we set the severity level. So we test the method setLevel, and we tell
+        it, when it's called (called_with) to match any argument passed to the method (unittest.mock.ANY).
+        """
+
         mock_logger = mock_getLogger.return_value
         mock_logger.setLevel.called_with = unittest.mock.ANY
         logger = Logger(Path(__file__) / Path("../config/logging_debug.ini"))
@@ -43,7 +50,7 @@ class TestConfigReading(unittest.TestCase):
 
     @patch('logging.getLogger')
     def test_log_level_warning(self, mock_getLogger):
-        # Mock logger creation and set level to INFO
+        # Mock logger creation and set level to WARNING
         mock_logger = mock_getLogger.return_value
         mock_logger.setLevel.called_with = unittest.mock.ANY
         logger = Logger(Path(__file__) / Path("../config/logging_warning.ini"))
@@ -52,7 +59,7 @@ class TestConfigReading(unittest.TestCase):
 
     @patch('logging.getLogger')
     def test_log_level_error(self, mock_getLogger):
-        # Mock logger creation and set level to INFO
+        # Mock logger creation and set level to ERROR
         mock_logger = mock_getLogger.return_value
         mock_logger.setLevel.called_with = unittest.mock.ANY
         logger = Logger(Path(__file__) / Path("../config/logging_error.ini"))
@@ -61,33 +68,29 @@ class TestConfigReading(unittest.TestCase):
 
     @patch('logging.getLogger')
     def test_log_level_critical(self, mock_getLogger):
-        # Mock logger creation and set level to INFO
+        # Mock logger creation and set level to CRITICAL
         mock_logger = mock_getLogger.return_value
         mock_logger.setLevel.called_with = unittest.mock.ANY
         logger = Logger(Path(__file__) / Path("../config/logging_critical.ini"))
         logger.critical('Test critical message')
         mock_logger.setLevel.assert_called_once_with(logging.CRITICAL)
 
-    @patch('logging.getLogger')
-    def test_log_message(self, mock_getLogger):
-        # Mock logger creation and capture logged messages
-        captured_messages = []
-        mock_logger = mock_getLogger.return_value
-        mock_logger.debug = captured_messages.append
-        logger = Logger()
-        logger.debug('Test debug message')
-        self.assertEqual(captured_messages, ['Test debug message'])
-
 # to understand
     @patch('logging.getLogger')
     def test_log_messages_complete(self, mock_getLogger):
-        # Mock logger creation and capture logged messages
+        """
+        Mock logger creation and capture logged messages. The return_value attribute of a mock object specifies what
+        value the mock object will return when it's called. We assign to the mock_logger the ability to store and
+        return what will be returned from return mock_getLogger, when Logger constructor is invoked. In particular,
+        we want to test if the functions debug, info, warning, error and critical return correctly a message. So we
+        test the methods by mocking them with the function capture_message when invoked (instead of returning
+        self.logger.debug(message)). capture message just appends the string to a list.
+        """
         captured_messages = []
 
         def capture_message(message):
             captured_messages.append(message)
 
-# The .return_value attribute of a mock object specifies what value the mock object will return when it's called.
         mock_logger = mock_getLogger.return_value
         mock_logger.debug = capture_message
         mock_logger.info = capture_message
@@ -97,7 +100,7 @@ class TestConfigReading(unittest.TestCase):
 
         logger = Logger()
 
-        # Test debug message
+        # Test debug message, the string is passed as message
         logger.debug('Test debug message')
         self.assertEqual(captured_messages, ['Test debug message'])
 
