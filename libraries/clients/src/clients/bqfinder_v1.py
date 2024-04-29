@@ -2,6 +2,7 @@ from clients.model.absclient_v1 import AbsClient1
 from clients.model.table import Table
 from google.cloud.bigquery.client import Client
 from logger.logger import Logger
+from typing import Any
 
 
 class BQFinder(AbsClient1):
@@ -10,15 +11,18 @@ class BQFinder(AbsClient1):
     target is an instance of the Table class
     """
 
-    def __init__(self, target: Table = None, logger: Logger = Logger()):
+    def __init__(self, client: Any = Client(), target: Table = None, logger: Logger = Logger()):
         """
         The constructor creates the instance using the setter method of client, a function should be passed.
         It creates the target attribute, which is a Table object.
         If the latter is None, it will be asked to the user to define it
         """
-        self.client = Client()
+        self.client = client
         self.target = target
         self.logger = logger
+        self.logger.debug(f"Client instance: {self.client}")
+        self.logger.debug(f"Table instance: '{self.target.project}':'{self.target.dataset}'.'{self.target.table_name}")
+        self.logger.debug(f"Logger instance: {self.logger}")
 
     @property
     def client(self):
@@ -30,7 +34,7 @@ class BQFinder(AbsClient1):
     @client.setter
     def client(self, client_obj):
         """
-        This method should instantiate the client
+        This method should instantiate the client. By default, uses the GCP one.
         """
         self._client = client_obj
 
@@ -76,6 +80,7 @@ class BQFinder(AbsClient1):
         """
 
         target_table = f"{self.target.project}.{self.target.dataset}.{self.target.table_name}"
+        self.logger.debug(f"Table instance: '{self.target.project}':'{self.target.dataset}'.'{self.target.table_name}")
 
         try:
             self.client.get_table(target_table)
@@ -101,14 +106,13 @@ def main():
 
     table = Table(project_id, dataset_id, table_id)
 
-    bqfind1 = BQFinder(table)
-    print(bqfind1.client)
+    bqfind1 = BQFinder(target=table)
     exists1 = bqfind1.find()
     print(exists1)
 
-    bqfind2 = BQFinder()
-    exists2 = bqfind2.find()
-    print(exists2)
+    # bqfind2 = BQFinder()
+    # exists2 = bqfind2.find()
+    # print(exists2)
 
 
 if __name__ == "__main__":

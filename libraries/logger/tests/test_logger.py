@@ -1,7 +1,7 @@
 import unittest
 import logging
-from unittest.mock import patch
 
+from unittest.mock import patch
 from pathlib import Path
 from logger.logger import Logger  # Replace with your script path
 
@@ -75,7 +75,7 @@ class TestConfigReading(unittest.TestCase):
         logger.critical('Test critical message')
         mock_logger.setLevel.assert_called_once_with(logging.CRITICAL)
 
-# to understand
+    # to understand
     @patch('logging.getLogger')
     def test_log_messages_complete(self, mock_getLogger):
         """
@@ -133,3 +133,5 @@ class TestConfigReading(unittest.TestCase):
         self.assertEqual(captured_messages, ['Test critical message'])
 
 
+if __name__ == '__main__':
+    unittest.main()

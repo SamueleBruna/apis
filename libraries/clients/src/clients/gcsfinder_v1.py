@@ -2,6 +2,7 @@ from clients.model.absclient_v1 import AbsClient1
 from clients.model.blob import Blob
 from google.cloud.storage import Client
 from logger.logger import Logger
+from typing import Any
 
 
 class GCSFinder(AbsClient1):
@@ -10,15 +11,18 @@ class GCSFinder(AbsClient1):
     target is an instance of the Blob class
     """
 
-    def __init__(self, target: Blob = None,  logger: Logger = Logger()):
+    def __init__(self, client: Any = Client(), target: Blob = None,  logger: Logger = Logger()):
         """
         The constructor creates the instance using the setter method of client, a function should be passed.
         It creates the target attribute, which is a Blob object.
         If the latter is None, it will be asked to the user to define it
         """
-        self.client = Client()
+        self.client = client
         self.target = target
         self.logger = logger
+        self.logger.debug(f"Client instance: {self.client}")
+        self.logger.debug(f"Blob instance: '{self.target.bucket}'/'{self.target.path}")
+        self.logger.debug(f"Logger instance: {self.logger}")
 
     @property
     def client(self):
@@ -30,8 +34,9 @@ class GCSFinder(AbsClient1):
     @client.setter
     def client(self, client_obj):
         """
-        This method should instantiate the client
+        This method should instantiate the client. By default, uses the GCP one.
         """
+
         self._client = client_obj
 
     @property
@@ -80,6 +85,7 @@ class GCSFinder(AbsClient1):
             # make an HTTP request.
             bucket = self.client.bucket(self.target.bucket)
             blob = bucket.get_blob(self.target.path)
+            self.logger.info(f"Blob instance: '{self.target.bucket} {self.target.path}")
 
             self.logger.info(f"The blob exists! Here are some of is metadata")
             self.logger.info(f"Blob: {blob.name}")
@@ -92,7 +98,7 @@ class GCSFinder(AbsClient1):
             return True
 
         except Exception as e:
-            self.logger.error(f"The blob'{self.target.bucket}'/'{self.target.path}'.' doesn't exists!")
+            self.logger.error(f"The blob'{self.target.bucket} {self.target.path} doesn't exists!")
             self.logger.exception(e)
             return False
 
@@ -100,16 +106,15 @@ class GCSFinder(AbsClient1):
 def main():
     bucket_name = "skyita-da-daita-test-application"
     blob_name = "data-model-mapper/conf/marketing_cloud.dynamic_event/map.json"
-    table = Blob(bucket_name, blob_name)
+    blob = Blob(bucket_name, blob_name)
 
-    gcsfind1 = GCSFinder(table)
-    print(gcsfind1.client)
+    gcsfind1 = GCSFinder(target=blob)
     exists1 = gcsfind1.find()
     print(exists1)
 
-    gcsfind2 = GCSFinder()
-    exists2 = gcsfind2.find()
-    print(exists2)
+    # gcsfind2 = GCSFinder()
+    # exists2 = gcsfind2.find()
+    # print(exists2)
 
 
 if __name__ == "__main__":
