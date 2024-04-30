@@ -85,9 +85,9 @@ class GCSFinder(AbsClient1):
             # make an HTTP request.
             bucket = self.client.bucket(self.target.bucket)
             blob = bucket.get_blob(self.target.path)
-            self.logger.info(f"Blob instance: '{self.target.bucket} {self.target.path}")
 
-            self.logger.info(f"The blob exists! Here are some of is metadata")
+            self.logger.info(f"Blob instance: {self.target.bucket} {self.target.path} exists!")
+
             self.logger.info(f"Blob: {blob.name}")
             self.logger.info(f"Bucket: {blob.bucket.name}")
             self.logger.info(f"Storage class: {blob.storage_class}")
@@ -98,7 +98,7 @@ class GCSFinder(AbsClient1):
             return True
 
         except Exception as e:
-            self.logger.error(f"The blob'{self.target.bucket} {self.target.path} doesn't exists!")
+            self.logger.error(f"The blob {self.target.bucket} {self.target.path} doesn't exists!")
             self.logger.exception(e)
             return False
 

@@ -5,7 +5,7 @@ from unittest.mock import patch
 from pathlib import Path
 from logger.logger import Logger  # Replace with your script path
 
-
+# TODO: improve test_log_messages_complete test
 class TestConfigReading(unittest.TestCase):
 
     @patch('configparser.ConfigParser.read')
@@ -75,7 +75,6 @@ class TestConfigReading(unittest.TestCase):
         logger.critical('Test critical message')
         mock_logger.setLevel.assert_called_once_with(logging.CRITICAL)
 
-    # to understand
     @patch('logging.getLogger')
     def test_log_messages_complete(self, mock_getLogger):
         """
