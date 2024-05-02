@@ -12,7 +12,7 @@ class TestGCSFinderFinder(unittest.TestCase):
     @patch('google.cloud.storage.client.Client', autospec=True)
     def test_init_with_target(self, mock_client, mock_logger):
         # Create a Table object
-        target_blob = Blob('bucket1', 'path/to/file1.txt')
+        target_blob = Blob(project='project', bucket='bucket1', path='path/to/file1.txt')
 
         # Initialize GCSFinder with target and logger
         finder = GCSFinder(client=mock_client, target=target_blob, logger=mock_logger)
@@ -32,11 +32,11 @@ class TestGCSFinderFinder(unittest.TestCase):
         # side_effects (see: https://docs.python.org/3/library/unittest.mock.html#unittest.mock.Mock.side_effect and
         # https://stackoverflow.com/questions/56191199/what-happens-when-a-python-mock-has-both-a-return-value-and-a-list-of-side-effec )
 
-        with patch('builtins.input', side_effect=['bucket1', 'path/to/file.txt']):
+        with patch('builtins.input', side_effect=['project', 'bucket1', 'path/to/file.txt']):
             finder = GCSFinder(client=mock_client, logger=mock_logger)
 
         # Expected target table
-        target_blob = Blob('bucket1', 'path/to/file.txt')
+        target_blob = Blob(project='project', bucket='bucket1', path='path/to/file.txt')
 
         # Assertions
         self.assertEqual(finder.client, mock_client)
@@ -49,6 +49,7 @@ class TestGCSFinderFinder(unittest.TestCase):
         # Mock GCS client to return a table
         mock_blob = MagicMock()
         mock_blob.name = 'file.txt'
+        mock_blob.project = 'project1'
         mock_blob.bucket.name = 'bucket1'
         mock_blob.storage_class = 'STANDARD'
         mock_blob.id = 'blob-id'
@@ -57,7 +58,7 @@ class TestGCSFinderFinder(unittest.TestCase):
         mock_client.bucket.return_value.get_blob.return_value = mock_blob
 
         # Create a Table object
-        target_blob = Blob('bucket1', 'path/to/file.txt')
+        target_blob = Blob(project='project', bucket='bucket1', path='path/to/file1.txt')
 
         # Create GCSFinder with target and logger
         finder = GCSFinder(client=mock_client, target=target_blob, logger=mock_logger)
@@ -68,7 +69,7 @@ class TestGCSFinderFinder(unittest.TestCase):
         self.assertTrue(result)
         # useful attributes of mock_library are mock_calls and call_args_list, that can be accessed as lists
         self.assertListEqual(mock_logger.info.mock_calls, [
-            call(f"Blob instance: {target_blob.bucket} {target_blob.path} exists!"),
+            call(f"Blob instance: {target_blob.project}: {target_blob.bucket} {target_blob.path} exists!"),
             call(f"Blob: {mock_blob.name}"),
             call(f"Bucket: {mock_blob.bucket.name}"),
             call(f"Storage class: {mock_blob.storage_class}"),
@@ -84,7 +85,7 @@ class TestGCSFinderFinder(unittest.TestCase):
         mock_client.get_table.side_effect = Exception('Table not found')
 
         # Create a Table object
-        target_blob = Blob('bucket1', 'path/to/file.txt')
+        target_blob = Blob(project='project', bucket='bucket1', path='path/to/file1.txt')
 
         # Create GCSFinder with target and logger
         finder = GCSFinder(client=mock_client, target=target_blob, logger=mock_logger)

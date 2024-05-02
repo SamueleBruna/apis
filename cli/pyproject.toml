@@ -2,13 +2,23 @@
 name = "cli"
 version = "0.1.0"
 description = ""
-authors = ["Samuele Bruna <samuele.bruna.nttdata@skytv.it>"]
+authors = ["Samuele Bruna"]
 readme = "README.md"
 packages = [{include = "cli", from = "src"}]
 
+[tool.poetry.scripts]
+dagfinder = "dagfinderproj.__main__:app"
+
 [tool.poetry.dependencies]
 python = "^3.11"
+typer = "^0.12.3"
+clients = { path = "../libraries/clients", develop = true }
+logger = { path = "../libraries/logger", develop = true }
 
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+pytest-cov = "*"
+setuptools = "*"
 
 [build-system]
 requires = ["poetry-core"]

@@ -5,6 +5,7 @@ from unittest.mock import patch
 from pathlib import Path
 from logger.logger import Logger  # Replace with your script path
 
+
 # TODO: improve test_log_messages_complete test
 class TestConfigReading(unittest.TestCase):
 

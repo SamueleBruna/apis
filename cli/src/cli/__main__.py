@@ -1,0 +1,58 @@
+import typer
+from typing_extensions import Annotated
+from clients.model.table import Table
+from clients.model.blob import Blob
+from clients.bqfinder_v1 import BQFinder
+from clients.gcsfinder_v1 import GCSFinder
+from logger.logger import Logger
+
+app = typer.Typer(name="gcpfinder", no_args_is_help=True, add_completion=False, pretty_exceptions_enable=False)
+logger = Logger()
+
+help_proj = "This Argument represents the name of the project in Bigquery"
+help_dataset = "This Argument represents the name of the dataset in Bigquery"
+help_table_name = "This Argument represents the name of the table in Bigquery"
+help_bucket = "This Argument represents the name of the bucket in Google Cloud Storage"
+help_path_to_blob = "This Argument represents the path to the blob inside a bucket in Google Cloud Storage"
+
+
+# TODO: Composer client development
+# TODO: Ask if raising an exception is better in main or in the Class implementation if found or not
+# TODO: Create the complete Routine from BQ to GCS(finding the Composer Bucket + finding the source code) to Composer (Daginfos)
+
+# add id needed callbacks for argument type https://typer.tiangolo.com/tutorial/options/callback-and-context/
+@app.command()
+def bqfinder(project: Annotated[str, typer.Argument(help=help_proj)],
+             dataset: Annotated[str, typer.Argument(help=help_dataset)],
+             table_name: Annotated[str, typer.Argument(help=help_table_name)]):
+    """
+    Prints if a Table exists inside a project in Bigquery
+    """
+    # Creating the Table object
+    table: Table = Table(project=project, dataset=dataset, table_name=table_name)
+    # Creating the Client using BQFinder
+    bq_find: BQFinder = BQFinder(target=table, logger=logger)
+    table_exists: bool = bq_find.find()
+    if table_exists:
+        typer.echo(f"The table {table.project}:{table.dataset}.{table.table_name} exists!")
+
+
+@app.command()
+def gcsfinder(project: Annotated[str, typer.Argument(help=help_proj)],
+              bucket: Annotated[str, typer.Argument(help=help_bucket)],
+              path_to_blob: Annotated[str, typer.Argument(help=help_path_to_blob)]):
+    """
+    Prints if a Blob exists and if Logger level is set to INFO, even some additional informations
+    """
+
+    # Creating the Table object
+    blob: Blob = Blob(project=project, bucket=bucket, path=path_to_blob)
+    # Creating the Client using GCSFinder
+    gcs_find: GCSFinder = GCSFinder(target=blob, logger=logger)
+    blob_exists: bool = gcs_find.find()
+    if blob_exists:
+        typer.echo(f"The table {blob.project}:{blob.bucket}/{blob.path} exists!")
+
+
+if __name__ == "__main__":
+    app()

@@ -21,7 +21,7 @@ class GCSFinder(AbsClient1):
         self.target = target
         self.logger = logger
         self.logger.debug(f"Client instance: {self.client}")
-        self.logger.debug(f"Blob instance: '{self.target.bucket}'/'{self.target.path}")
+        self.logger.debug(f"Blob instance: {self.target.project}: {self.target.bucket}/{self.target.path}")
         self.logger.debug(f"Logger instance: {self.logger}")
 
     @property
@@ -55,9 +55,10 @@ class GCSFinder(AbsClient1):
             self._target = target
 
         else:
+            project = input('Please insert the name of the project: ')
             bucket = input('Please insert the name of the bucket: ')
             path = input('Please insert the path to the blob: ')
-            self._target = Blob(bucket, path)
+            self._target = Blob(project=project, bucket=bucket, path=path)
 
     @property
     def logger(self):
@@ -86,7 +87,7 @@ class GCSFinder(AbsClient1):
             bucket = self.client.bucket(self.target.bucket)
             blob = bucket.get_blob(self.target.path)
 
-            self.logger.info(f"Blob instance: {self.target.bucket} {self.target.path} exists!")
+            self.logger.info(f"Blob instance: {self.target.project}: {self.target.bucket} {self.target.path} exists!")
 
             self.logger.info(f"Blob: {blob.name}")
             self.logger.info(f"Bucket: {blob.bucket.name}")
@@ -98,15 +99,16 @@ class GCSFinder(AbsClient1):
             return True
 
         except Exception as e:
-            self.logger.error(f"The blob {self.target.bucket} {self.target.path} doesn't exists!")
+            self.logger.error(f"Blob {self.target.project}: {self.target.bucket} {self.target.path} doesn't exists!")
             self.logger.exception(e)
             return False
 
 
 def main():
+    project = "skyita-da-daita-test"
     bucket_name = "skyita-da-daita-test-application"
     blob_name = "data-model-mapper/conf/marketing_cloud.dynamic_event/map.json"
-    blob = Blob(bucket_name, blob_name)
+    blob = Blob(project=project, bucket=bucket_name, path=blob_name)
 
     gcsfind1 = GCSFinder(target=blob)
     exists1 = gcsfind1.find()

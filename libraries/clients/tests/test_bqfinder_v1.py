@@ -11,7 +11,7 @@ class TestBQFinder(unittest.TestCase):
     @patch('google.cloud.bigquery.client.Client', autospec=True)
     def test_init_with_target(self, mock_client, mock_logger):
         # Create a Table object
-        target_table = Table('project1', 'dataset1', 'table1')
+        target_table = Table(project='project1', dataset='dataset1', table_name='table1')
 
         # Initialize BQFinder with target and logger
         finder = BQFinder(client=mock_client, target=target_table, logger=mock_logger)
@@ -35,7 +35,7 @@ class TestBQFinder(unittest.TestCase):
             finder = BQFinder(client=mock_client, logger=mock_logger)
 
         # Expected target table
-        target_table = Table('project1', 'dataset1', 'table1')
+        target_table = Table(project='project1', dataset='dataset1', table_name='table1')
 
         # Assertions
         self.assertEqual(finder.client, mock_client)
@@ -50,7 +50,7 @@ class TestBQFinder(unittest.TestCase):
         mock_client.get_table.return_value = mock_table
 
         # Create a Table object
-        target_table = Table('project1', 'dataset1', 'table1')
+        target_table = Table(project='project1', dataset='dataset1', table_name='table1')
 
         # Create BQFinder with target and logger
         finder = BQFinder(client=mock_client, target=target_table, logger=mock_logger)
@@ -70,7 +70,7 @@ class TestBQFinder(unittest.TestCase):
         mock_client.get_table.side_effect = Exception('Table not found')
 
         # Create a Table object
-        target_table = Table('project1', 'dataset1', 'table1')
+        target_table = Table(project='project1', dataset='dataset1', table_name='table1')
 
         # Create BQFinder with target and logger
         finder = BQFinder(client=mock_client, target=target_table, logger=mock_logger)
