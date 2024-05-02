@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "cli", from = "src"}]
 
 [tool.poetry.scripts]
-dagfinder = "dagfinderproj.__main__:app"
+gcpfinder = "cli.__main__:app"
 
 [tool.poetry.dependencies]
 python = "^3.11"

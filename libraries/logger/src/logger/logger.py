@@ -40,7 +40,12 @@ class Logger:
         stream_handler = logging.StreamHandler()
         formatter = logging.Formatter(formatter_fmt)
         stream_handler.setFormatter(formatter)
-        self.logger.addHandler(stream_handler)
+        # This if condition ensures that only one handler is added to the Logger
+        # This prevents sme multiple logged values (ex. in cli the logger is imported 3 times; in the __main__.py
+        # in the bqfinder_v1.py and gcsfinder_v1. everytime the logger is imported, this script is executed.
+        # efficiency is low -> future projects maybe avoid the imposing of a default logger and use only one in main!
+        if not len(self.logger.handlers):
+            self.logger.addHandler(stream_handler)
 
     def debug(self, message):
         """

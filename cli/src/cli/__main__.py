@@ -22,36 +22,52 @@ help_path_to_blob = "This Argument represents the path to the blob inside a buck
 
 # add id needed callbacks for argument type https://typer.tiangolo.com/tutorial/options/callback-and-context/
 @app.command()
-def bqfinder(project: Annotated[str, typer.Argument(help=help_proj)],
-             dataset: Annotated[str, typer.Argument(help=help_dataset)],
-             table_name: Annotated[str, typer.Argument(help=help_table_name)]):
+def bqfinder(
+        project: Annotated[str, typer.Option("--project", "-pr", help=help_proj)] = None,
+        dataset: Annotated[str, typer.Option("--dataset", "-d", help=help_dataset)] = None,
+        table_name: Annotated[str, typer.Option("--table", "-t", help=help_table_name)] = None
+):
     """
     Prints if a Table exists inside a project in Bigquery
     """
-    # Creating the Table object
-    table: Table = Table(project=project, dataset=dataset, table_name=table_name)
-    # Creating the Client using BQFinder
-    bq_find: BQFinder = BQFinder(target=table, logger=logger)
+    if all(v is not None for v in [project, dataset, table_name]):
+        # Creating the Table object
+        table: Table = Table(project=project, dataset=dataset, table_name=table_name)
+        # Creating the Client using BQFinder and the target
+        bq_find: BQFinder = BQFinder(target=table)
+    else:
+        # Creating the Client using BQFinder without a target (It will be asked in input later in the constructor)
+        bq_find: BQFinder = BQFinder()
+
     table_exists: bool = bq_find.find()
     if table_exists:
-        typer.echo(f"The table {table.project}:{table.dataset}.{table.table_name} exists!")
+        typer.echo(f"The table {bq_find.target.project}:{bq_find.target.dataset}.{bq_find.target.table_name} exists!")
+    else:
+        typer.echo(f"The table {bq_find.target.project}:{bq_find.target.dataset}.{bq_find.target.table_name} doesn't "
+                   f"exists!")
 
 
 @app.command()
-def gcsfinder(project: Annotated[str, typer.Argument(help=help_proj)],
-              bucket: Annotated[str, typer.Argument(help=help_bucket)],
-              path_to_blob: Annotated[str, typer.Argument(help=help_path_to_blob)]):
+def gcsfinder(
+        project: Annotated[str, typer.Option("--project", "-pr", help=help_proj)] = None,
+        bucket: Annotated[str, typer.Option("--bucket", "-b", help=help_bucket)] = None,
+        path_to_blob: Annotated[str, typer.Option("--path", "-pt", help=help_path_to_blob)] = None
+):
     """
-    Prints if a Blob exists and if Logger level is set to INFO, even some additional informations
+    Prints if a Blob exists and if Logger level is set to INFO, even some additional information
     """
+    if all(v is not None for v in [project, bucket, path_to_blob]):
+        # Creating the Table object
+        blob: Blob = Blob(project=project, bucket=bucket, path=path_to_blob)
+        # Creating the Client using GCSFinder
+        gcs_find: GCSFinder = GCSFinder(target=blob, logger=logger)
+    else:
+        # Creating the Client using GCSFinder without a target (It will be asked in input later in the constructor)
+        gcs_find: GCSFinder = GCSFinder(logger=logger)
 
-    # Creating the Table object
-    blob: Blob = Blob(project=project, bucket=bucket, path=path_to_blob)
-    # Creating the Client using GCSFinder
-    gcs_find: GCSFinder = GCSFinder(target=blob, logger=logger)
     blob_exists: bool = gcs_find.find()
     if blob_exists:
-        typer.echo(f"The table {blob.project}:{blob.bucket}/{blob.path} exists!")
+        typer.echo(f"The table {gcs_find.target.project}:{gcs_find.target.bucket}/{gcs_find.target.path} exists!")
 
 
 if __name__ == "__main__":

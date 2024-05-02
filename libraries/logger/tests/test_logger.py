@@ -1,9 +1,9 @@
 import unittest
 import logging
 
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 from pathlib import Path
-from logger.logger import Logger  # Replace with your script path
+from logger.logger import Logger
 
 
 # TODO: improve test_log_messages_complete test
@@ -40,14 +40,35 @@ class TestConfigReading(unittest.TestCase):
         logger.debug('Test debug message')
         mock_logger.setLevel.assert_called_once_with(logging.DEBUG)
 
-    @patch('logging.getLogger')
-    def test_log_level_info(self, mock_getLogger):
-        # Mock logger creation and set level to INFO
-        mock_logger = mock_getLogger.return_value
-        mock_logger.setLevel.called_with = unittest.mock.ANY
-        logger = Logger(Path(__file__) / Path("../config/logging_info.ini"))
-        logger.info('Test info message')
-        mock_logger.setLevel.assert_called_once_with(logging.INFO)
+    @patch('logging.StreamHandler')
+    def test_configure_logging_adds_handler(self, mock_stream_handler):
+        """
+        Tests that configure_logging adds a StreamHandler when none exist.
+        """
+
+        # Create a Logger instance
+        logger1 = Logger(Path(__file__) / Path("../config/logging_info.ini"))
+
+        # Assert that StreamHandler was called and added
+        mock_stream_handler.assert_called_once()
+        self.assertEqual(len(logger1.logger.handlers), 1)
+        # mock_stream_handler.assert_called_once_with(logging.StreamHandler)
+        # self.assertIsInstance(logger1.logger.handlers[0], logging.StreamHandler)
+
+    @patch('logging.StreamHandler')
+    def test_configure_logging_doesnt_add_handler(self, mock_stream_handler):
+        """
+        Tests that configure_logging doesn't add a StreamHandler if one already exists.
+        """
+
+        # Invoke twice the Logger configuration (one with constructor, the other using the method)
+        logger1 = Logger(Path(__file__) / Path("../config/logging_info.ini"))
+        logger1.configure_logging()
+
+        # Assert that StreamHandler was called tice, but only one handler added
+
+        self.assertEqual(mock_stream_handler.call_count, 2)
+        self.assertEqual(len(logger1.logger.handlers), 1)  # Handler count remains the same
 
     @patch('logging.getLogger')
     def test_log_level_warning(self, mock_getLogger):
@@ -57,6 +78,15 @@ class TestConfigReading(unittest.TestCase):
         logger = Logger(Path(__file__) / Path("../config/logging_warning.ini"))
         logger.error('Test warning message')
         mock_logger.setLevel.assert_called_once_with(logging.WARNING)
+
+    @patch('logging.getLogger')
+    def test_log_level_info(self, mock_getLogger):
+        # Mock logger creation and set level to INFO
+        mock_logger = mock_getLogger.return_value
+        mock_logger.setLevel.called_with = unittest.mock.ANY
+        logger = Logger(Path(__file__) / Path("../config/logging_info.ini"))
+        logger.info('Test info message')
+        mock_logger.setLevel.assert_called_once_with(logging.INFO)
 
     @patch('logging.getLogger')
     def test_log_level_error(self, mock_getLogger):
