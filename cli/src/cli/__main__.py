@@ -67,7 +67,10 @@ def gcsfinder(
 
     blob_exists: bool = gcs_find.find()
     if blob_exists:
-        typer.echo(f"The table {gcs_find.target.project}:{gcs_find.target.bucket}/{gcs_find.target.path} exists!")
+        typer.echo(f"The blob {gcs_find.target.project}:{gcs_find.target.bucket}/{gcs_find.target.path} exists!")
+    else:
+        typer.echo(
+            f"The blob {gcs_find.target.project}:{gcs_find.target.bucket}/{gcs_find.target.path} doesn't exists!")
 
 
 if __name__ == "__main__":
