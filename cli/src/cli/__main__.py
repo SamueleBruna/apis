@@ -34,10 +34,10 @@ def bqfinder(
         # Creating the Table object
         table: Table = Table(project=project, dataset=dataset, table_name=table_name)
         # Creating the Client using BQFinder and the target
-        bq_find: BQFinder = BQFinder(target=table)
+        bq_find: BQFinder = BQFinder(target=table, logger=logger)
     else:
         # Creating the Client using BQFinder without a target (It will be asked in input later in the constructor)
-        bq_find: BQFinder = BQFinder()
+        bq_find: BQFinder = BQFinder(logger=logger)
 
     table_exists: bool = bq_find.find()
     if table_exists:
