@@ -7,8 +7,6 @@ from unittest.mock import patch
 runner = CliRunner()
 
 
-# TODO adding test using patching of clients (following the normal tests) and GCS
-
 class MyTestCase(unittest.TestCase):
 
     # you need to call the method from the script and not from the source. This will mock it when it is called in main

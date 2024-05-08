@@ -69,7 +69,7 @@ class TestGCSFinderFinder(unittest.TestCase):
         self.assertTrue(result)
         # useful attributes of mock_library are mock_calls and call_args_list, that can be accessed as lists
         self.assertListEqual(mock_logger.info.mock_calls, [
-            call(f"Blob instance: {target_blob.project}: {target_blob.bucket} {target_blob.path} exists!"),
+            call(f"Blob {target_blob.project}:{target_blob.bucket}/{target_blob.path} exists!"),
             call(f"Blob: {mock_blob.name}"),
             call(f"Bucket: {mock_blob.bucket.name}"),
             call(f"Storage class: {mock_blob.storage_class}"),
@@ -96,7 +96,7 @@ class TestGCSFinderFinder(unittest.TestCase):
         # Assertions
         self.assertFalse(result)
         mock_logger.error.assert_called_once_with(
-            f"The blob {target_blob.bucket} {target_blob.path} doesn't exists!")
+            f"Blob {target_blob.project}:{target_blob.bucket}/{target_blob.path} doesn't exists!")
         mock_logger.exception.assert_called_once()
 
 

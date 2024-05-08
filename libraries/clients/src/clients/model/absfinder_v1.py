@@ -1,7 +1,7 @@
 import abc
 
 
-class AbsClient1(abc.ABC):
+class AbsFinder1(abc.ABC):
     """
     This is an abstract class, which gives a template to other classes that must implement a Client and find method.
     It is based on the fact that the user must have a Google Cloud SDK active and configured to the correct project

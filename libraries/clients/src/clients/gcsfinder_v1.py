@@ -1,11 +1,11 @@
-from clients.model.absclient_v1 import AbsClient1
+from clients.model.absfinder_v1 import AbsFinder1
 from clients.model.blob import Blob
 from google.cloud.storage import Client
 from logger.logger import Logger
 from typing import Any
 
 
-class GCSFinder(AbsClient1):
+class GCSFinder(AbsFinder1):
     """
     This class aims to instantiate a connection to Bigquery and find a Blob.
     target is an instance of the Blob class
@@ -87,7 +87,7 @@ class GCSFinder(AbsClient1):
             bucket = self.client.bucket(self.target.bucket)
             blob = bucket.get_blob(self.target.path)
 
-            self.logger.info(f"Blob instance: {self.target.project}: {self.target.bucket} {self.target.path} exists!")
+            self.logger.info(f"Blob {self.target.project}:{self.target.bucket}/{self.target.path} exists!")
 
             self.logger.info(f"Blob: {blob.name}")
             self.logger.info(f"Bucket: {blob.bucket.name}")
@@ -99,7 +99,7 @@ class GCSFinder(AbsClient1):
             return True
 
         except Exception as e:
-            self.logger.error(f"Blob {self.target.project}: {self.target.bucket} {self.target.path} doesn't exists!")
+            self.logger.error(f"Blob {self.target.project}:{self.target.bucket}/{self.target.path} doesn't exists!")
             self.logger.exception(e)
             return False
 

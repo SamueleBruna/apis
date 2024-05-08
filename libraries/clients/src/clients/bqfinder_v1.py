@@ -1,11 +1,11 @@
-from clients.model.absclient_v1 import AbsClient1
+from clients.model.absfinder_v1 import AbsFinder1
 from clients.model.table import Table
 from google.cloud.bigquery.client import Client
 from logger.logger import Logger
 from typing import Any
 
 
-class BQFinder(AbsClient1):
+class BQFinder(AbsFinder1):
     """
     This class aims to instantiate a connection to Bigquery and find a table.
     target is an instance of the Table class
